@@ -2,6 +2,17 @@ import { NextResponse } from "next/server";
 import { getAnonToken, setAnonCookie } from "@/lib/auth/session";
 import { createAnonSession, getAnonSessionByToken } from "@/lib/db/queries/anonymous";
 
+export async function GET() {
+  try {
+    const token = await getAnonToken();
+    if (!token) return NextResponse.json({ data: { questionCount: null } });
+    const session = await getAnonSessionByToken(token);
+    return NextResponse.json({ data: { questionCount: session?.question_count ?? null } });
+  } catch {
+    return NextResponse.json({ data: { questionCount: null } });
+  }
+}
+
 export async function POST() {
   try {
     const existingToken = await getAnonToken();

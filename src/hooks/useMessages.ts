@@ -90,6 +90,7 @@ export function useStreamMessage(chatId: string) {
               }
               if (event.type === "done") {
                 queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
+                queryClient.invalidateQueries({ queryKey: ["anon-count"] });
               }
               if (event.type === "error") {
                 setState({ isStreaming: false, streamingContent: "", error: event.message });

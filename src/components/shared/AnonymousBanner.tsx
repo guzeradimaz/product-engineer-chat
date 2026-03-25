@@ -1,32 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 export function AnonymousBanner() {
-  const [questionCount, setQuestionCount] = useState<number | null>(null);
+  const { data } = useQuery({
+    queryKey: ["anon-count"],
+    queryFn: async () => {
+      const r = await fetch("/api/auth/anonymous");
+      const json = await r.json();
+      return json.data?.questionCount as number | null;
+    },
+    staleTime: 0,
+  });
 
-  useEffect(() => {
-    fetch("/api/auth/anonymous", { method: "POST" })
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.data?.questionCount !== undefined) {
-          setQuestionCount(json.data.questionCount);
-        }
-      })
-      .catch(() => null);
-  }, []);
+  if (data === null || data === undefined) return null;
 
-  if (questionCount === null) return null;
-
-  const remaining = Math.max(0, 3 - questionCount);
+  const remaining = Math.max(0, 3 - data);
 
   return (
     <div className="flex items-center justify-between px-3 py-2 bg-[#1a1a1a] border-b border-[#222] text-xs">
       <span className="text-zinc-400">
         {remaining === 0
           ? "You've used all 3 free questions."
-          : `${questionCount}/3 free questions used.`}
+          : `${data}/3 free questions used.`}
       </span>
       <Link
         href="/signup"
