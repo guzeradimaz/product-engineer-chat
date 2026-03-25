@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
+async function initAnonSession(): Promise<number | null> {
+  // POST is idempotent — creates session if missing, returns current count
+  const r = await fetch("/api/auth/anonymous", { method: "POST" });
+  const json = await r.json();
+  return json.data?.questionCount ?? null;
+}
+
 export function AnonymousBanner() {
   const { data } = useQuery({
     queryKey: ["anon-count"],
-    queryFn: async () => {
-      const r = await fetch("/api/auth/anonymous");
-      const json = await r.json();
-      return json.data?.questionCount as number | null;
-    },
+    queryFn: initAnonSession,
     staleTime: 0,
   });
 
