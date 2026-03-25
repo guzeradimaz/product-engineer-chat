@@ -21,7 +21,7 @@ export function MessageItem({ message }: Props) {
   };
 
   return (
-    <div className={`group flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
+    <div className={`group flex gap-3 ${isUser ? "flex-row-reverse msg-animate-user" : "msg-animate"}`}>
       {/* Avatar */}
       <div
         className={`flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center text-white text-xs font-bold mt-0.5 ${

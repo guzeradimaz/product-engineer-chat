@@ -113,7 +113,7 @@ export function ChatInput({ onSend, isStreaming, disabled }: Props) {
         onRemove={(id) => setAttachments((prev) => prev.filter((a) => a.id !== id))}
       />
 
-      <div className="flex items-end gap-2 p-3">
+      <div className="flex items-end gap-2 p-3 input-glow rounded-xl transition-all">
         {/* File attach button */}
         <input
           ref={fileInputRef}

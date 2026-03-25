@@ -18,6 +18,7 @@ export function ChatWindow({ chatId }: Props) {
   const { data: messages, isLoading } = useMessages(chatId);
   const { isStreaming, streamingContent, error, sendMessage } = useStreamMessage(chatId);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [optimisticMsg, setOptimisticMsg] = useState<string | null>(null);
   const didAutoSend = useRef(false);
 
   // Auto-send pending message set from home page
@@ -33,7 +34,9 @@ export function ChatWindow({ chatId }: Props) {
   }, [chatId, isLoading, sendMessage]);
 
   const handleSend = async (content: string, attachmentIds: string[]) => {
+    if (content) setOptimisticMsg(content);
     const result = await sendMessage(content, attachmentIds);
+    setOptimisticMsg(null);
     if (result?.error === "ANON_LIMIT_REACHED") {
       setShowLimitModal(true);
     } else if (result?.error) {
@@ -64,9 +67,10 @@ export function ChatWindow({ chatId }: Props) {
         </div>
       )}
 
-      {(isLoading || nonEmptyMessages.length > 0) && (
+      {(isLoading || nonEmptyMessages.length > 0 || optimisticMsg) && (
         <MessageList
           messages={messages ?? []}
+          optimisticMessage={optimisticMsg}
           streamingContent={streamingContent}
           isStreaming={isStreaming}
           isLoading={isLoading}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { MobileSidebarToggle } from "@/components/sidebar/MobileSidebarToggle";
 import { AnonymousBanner } from "@/components/shared/AnonymousBanner";
+import { StarField } from "@/components/shared/StarField";
 import { useAuth } from "@/hooks/useAuth";
 import { useRealtime } from "@/hooks/useRealtime";
 
@@ -15,7 +16,8 @@ export default function MainLayout({ children }: { children: React.ReactNode }) 
   useRealtime(user?.id ?? null);
 
   return (
-    <div className="flex h-screen bg-[#0d0d0d]">
+    <div className="flex h-screen bg-[#0d0d0d] relative">
+      <StarField />
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       <main className="flex flex-col flex-1 min-w-0 overflow-hidden">

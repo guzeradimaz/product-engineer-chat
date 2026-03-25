@@ -9,12 +9,13 @@ import { ChevronDown } from "lucide-react";
 
 interface Props {
   messages: MessageWithAttachments[];
+  optimisticMessage?: string | null;
   streamingContent: string;
   isStreaming: boolean;
   isLoading: boolean;
 }
 
-export function MessageList({ messages, streamingContent, isStreaming, isLoading }: Props) {
+export function MessageList({ messages, optimisticMessage, streamingContent, isStreaming, isLoading }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [autoScroll, setAutoScroll] = useState(true);
@@ -67,6 +68,15 @@ export function MessageList({ messages, streamingContent, isStreaming, isLoading
         {messages.map((message) => (
           <MessageItem key={message.id} message={message} />
         ))}
+
+        {optimisticMessage && (
+          <div className="flex gap-3 flex-row-reverse animate-in slide-in-from-bottom-2 fade-in duration-200">
+            <div className="flex-shrink-0 h-7 w-7 rounded-full bg-[#1e3a5f] flex items-center justify-center text-white text-xs font-bold mt-0.5">U</div>
+            <div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-[#1e3a5f] px-4 py-3 text-sm text-white">
+              <p className="whitespace-pre-wrap leading-relaxed">{optimisticMessage}</p>
+            </div>
+          </div>
+        )}
 
         {isStreaming && streamingContent && (
           <StreamingMessage content={streamingContent} />
