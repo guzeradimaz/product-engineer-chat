@@ -49,10 +49,10 @@ export type ApiSuccess<T> = { data: T };
 export type ApiError = { error: { message: string; code?: string } };
 export type ApiResponse<T> = ApiSuccess<T> | ApiError;
 
-export type LLMModel = "gpt-4o" | "gpt-4o-mini" | "gemini-1.5-flash";
+export type LLMModel = "gpt-4o" | "gpt-4o-mini" | "gemini-flash-lite-latest";
 
 export const LLM_MODELS: { value: LLMModel; label: string; description: string }[] = [
   { value: "gpt-4o", label: "GPT-4o", description: "OpenAI — Most capable, vision support" },
   { value: "gpt-4o-mini", label: "GPT-4o mini", description: "OpenAI — Faster & cheaper" },
-  { value: "gemini-1.5-flash", label: "Gemini 1.5 Flash", description: "Google — Alternative provider" },
+  { value: "gemini-flash-lite-latest", label: "Gemini Flash Lite", description: "Google — Alternative provider" },
 ];

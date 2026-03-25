@@ -23,7 +23,7 @@ export function Sidebar({ isOpen, onClose }: Props) {
   const { data: chats, isLoading: chatsLoading } = useChats();
   const createChat = useCreateChat();
   const logout = useLogout();
-  const [selectedModel, setSelectedModel] = useState<LLMModel>("gpt-4o");
+  const [selectedModel, setSelectedModel] = useState<LLMModel>("gemini-flash-lite-latest");
 
   const handleNewChat = () => {
     createChat.mutate(selectedModel);

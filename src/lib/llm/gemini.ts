@@ -25,6 +25,14 @@ function toGeminiContents(messages: LLMMessage[]): Content[] {
     }));
 }
 
+export async function generateTitle(firstMessage: string): Promise<string> {
+  const model = genAI.getGenerativeModel({ model: "gemini-flash-lite-latest" });
+  const result = await model.generateContent(
+    `Create a very short title (4-6 words) for a chat starting with: "${firstMessage.slice(0, 200)}". Reply with only the title.`
+  );
+  return result.response.text().trim();
+}
+
 export class GeminiProvider implements LLMProvider {
   constructor(private model: string) {}
 

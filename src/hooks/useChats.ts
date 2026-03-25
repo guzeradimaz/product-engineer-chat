@@ -24,7 +24,7 @@ export function useCreateChat() {
   const router = useRouter();
 
   return useMutation({
-    mutationFn: async (model: string = "gpt-4o") => {
+    mutationFn: async (model: string = "gemini-flash-lite-latest") => {
       const res = await fetch("/api/chats", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

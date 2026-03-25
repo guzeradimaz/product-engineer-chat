@@ -23,9 +23,9 @@ export function MessageList({ messages, streamingContent, isStreaming, isLoading
   // Auto-scroll to bottom
   useEffect(() => {
     if (autoScroll) {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      bottomRef.current?.scrollIntoView({ behavior: isStreaming ? "instant" : "smooth" });
     }
-  }, [messages.length, streamingContent, autoScroll]);
+  }, [messages.length, streamingContent, autoScroll, isStreaming]);
 
   // Detect manual scroll
   const handleScroll = () => {

@@ -4,7 +4,7 @@ import { Chat } from "@/types";
 
 export async function createChat(
   ownerId: { userId: string } | { anonId: string },
-  model = "gpt-4o"
+  model = "gemini-flash-lite-latest"
 ): Promise<Chat> {
   const insert =
     "userId" in ownerId

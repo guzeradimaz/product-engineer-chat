@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json().catch(() => ({}));
-    const model = body.model ?? "gpt-4o";
+    const model = body.model ?? "gemini-flash-lite-latest";
 
     let chat;
     if (session.type === "user") {

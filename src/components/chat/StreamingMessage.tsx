@@ -15,8 +15,10 @@ export function StreamingMessage({ content }: Props) {
       </div>
       <div className="flex-1 min-w-0">
         <div className="prose prose-invert prose-sm max-w-none">
-          <MarkdownContent content={content} />
-          <span className="inline-block w-0.5 h-4 bg-white ml-0.5 animate-pulse align-middle" />
+          <p className="whitespace-pre-wrap text-sm text-zinc-100 leading-relaxed m-0">
+            {content}
+            <span className="inline-block w-0.5 h-4 bg-white ml-0.5 animate-pulse align-middle" />
+          </p>
         </div>
       </div>
     </div>

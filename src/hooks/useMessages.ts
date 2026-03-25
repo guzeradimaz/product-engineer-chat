@@ -2,7 +2,7 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { MessageWithAttachments } from "@/types";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 
 async function fetchMessages(chatId: string): Promise<MessageWithAttachments[]> {
   const res = await fetch(`/api/chats/${chatId}/messages`);
@@ -34,8 +34,13 @@ export function useStreamMessage(chatId: string) {
     error: null,
   });
 
+  const accumulatedRef = useRef("");
+  const rafRef = useRef<number | null>(null);
+
   const sendMessage = useCallback(
     async (content: string, attachmentIds: string[] = []) => {
+      accumulatedRef.current = "";
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
       setState({ isStreaming: true, streamingContent: "", error: null });
 
       try {
@@ -56,7 +61,11 @@ export function useStreamMessage(chatId: string) {
         const reader = res.body!.getReader();
         const decoder = new TextDecoder();
         let buffer = "";
-        let accumulatedContent = "";
+
+        const flushToState = () => {
+          setState((prev) => ({ ...prev, streamingContent: accumulatedRef.current }));
+          rafRef.current = null;
+        };
 
         while (true) {
           const { done, value } = await reader.read();
@@ -74,14 +83,12 @@ export function useStreamMessage(chatId: string) {
             try {
               const event = JSON.parse(raw);
               if (event.type === "chunk") {
-                accumulatedContent += event.content;
-                setState((prev) => ({
-                  ...prev,
-                  streamingContent: accumulatedContent,
-                }));
+                accumulatedRef.current += event.content;
+                if (!rafRef.current) {
+                  rafRef.current = requestAnimationFrame(flushToState);
+                }
               }
               if (event.type === "done") {
-                // Refresh messages from server
                 queryClient.invalidateQueries({ queryKey: ["messages", chatId] });
               }
               if (event.type === "error") {
@@ -94,6 +101,10 @@ export function useStreamMessage(chatId: string) {
           }
         }
 
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
         setState({ isStreaming: false, streamingContent: "", error: null });
         return { success: true };
       } catch (err) {

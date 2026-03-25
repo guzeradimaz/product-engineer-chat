@@ -6,7 +6,7 @@ import { ChatInput } from "./ChatInput";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 interface Props {
@@ -17,6 +17,19 @@ export function ChatWindow({ chatId }: Props) {
   const { data: messages, isLoading } = useMessages(chatId);
   const { isStreaming, streamingContent, error, sendMessage } = useStreamMessage(chatId);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const didAutoSend = useRef(false);
+
+  // Auto-send pending message set from home page
+  useEffect(() => {
+    if (didAutoSend.current || isLoading) return;
+    const key = `pending_msg_${chatId}`;
+    const raw = sessionStorage.getItem(key);
+    if (!raw) return;
+    sessionStorage.removeItem(key);
+    didAutoSend.current = true;
+    const { content, attachmentIds } = JSON.parse(raw);
+    void sendMessage(content, attachmentIds);
+  }, [chatId, isLoading, sendMessage]);
 
   const handleSend = async (content: string, attachmentIds: string[]) => {
     const result = await sendMessage(content, attachmentIds);
